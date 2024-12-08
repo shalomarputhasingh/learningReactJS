@@ -1,4 +1,5 @@
 import { useState } from "react";
+
 function Square({ value, onClicked }) {
   return (
     <button
@@ -10,15 +11,17 @@ function Square({ value, onClicked }) {
     </button>
   );
 }
+
 function Board({ nextXValue, squares, onPlay }) {
   function handleClick(i) {
     if (squares[i] || calculateWinner(squares)) {
       return;
     }
-    let nextSquares = squares.slice();
-    nextSquares[i] === null && (nextSquares[i] = nextXValue ? "X" : "O");
+    const nextSquares = squares.slice();
+    nextSquares[i] = nextXValue ? "X" : "O";
     onPlay(nextSquares);
   }
+
   function calculateWinner(squares) {
     const lines = [
       [0, 1, 2],
@@ -32,23 +35,18 @@ function Board({ nextXValue, squares, onPlay }) {
     ];
     for (let i = 0; i < lines.length; i++) {
       const [a, b, c] = lines[i];
-      if (
-        squares[a] &&
-        squares[a] === squares[b] &&
-        squares[a] === squares[c]
-      ) {
+      if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
         return squares[a];
       }
     }
     return null;
   }
+
   const winner = calculateWinner(squares);
-  let status;
-  if (winner) {
-    status = "Winner:" + winner;
-  } else {
-    status = "Next Player:" + String(nextXValue ? "X" : "O");
-  }
+  const status = winner
+    ? "Winner: " + winner
+    : "Next Player: " + (nextXValue ? "X" : "O");
+
   return (
     <>
       <h6>{status}</h6>
@@ -70,31 +68,27 @@ function Board({ nextXValue, squares, onPlay }) {
     </>
   );
 }
+
 function Game() {
   const [nextXValue, setNextXValue] = useState(true);
   const [history, setHistory] = useState([Array(9).fill(null)]);
-  const [squares, setSquares] = useState(Array(9).fill(null));
   const [currentMove, setCurrentMove] = useState(0);
   const currentSquares = history[currentMove];
+
   function handlePlay(nextSquares) {
     const nextHistory = [...history.slice(0, currentMove + 1), nextSquares];
     setHistory(nextHistory);
     setCurrentMove(nextHistory.length - 1);
     setNextXValue(!nextXValue);
-    setHistory([...history, nextSquares]);
   }
+
   function jumpTo(nextMove) {
     setCurrentMove(nextMove);
     setNextXValue(nextMove % 2 === 0);
-    
   }
+
   const moves = history.map((squares, move) => {
-    let description;
-    if (move > 0) {
-      description = "Move to Step#" + move;
-    } else {
-      description = "Go to Start";
-    }
+    const description = move > 0 ? "Move to Step#" + move : "Go to Start";
     return (
       <li key={move}>
         <button
@@ -107,6 +101,7 @@ function Game() {
       </li>
     );
   });
+
   return (
     <>
       <div className="game">
@@ -124,4 +119,5 @@ function Game() {
     </>
   );
 }
+
 export default Game;
