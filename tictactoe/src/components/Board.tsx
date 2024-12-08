@@ -1,5 +1,5 @@
 import { useState } from "react";
-
+//Makes the Sqaure boxes required for the Game
 function Square({ value, onClicked }) {
   return (
     <button
@@ -11,7 +11,7 @@ function Square({ value, onClicked }) {
     </button>
   );
 }
-
+// Handles the logic of the Game
 function Board({ nextXValue, squares, onPlay }) {
   function handleClick(i) {
     if (squares[i] || calculateWinner(squares)) {
@@ -21,7 +21,7 @@ function Board({ nextXValue, squares, onPlay }) {
     nextSquares[i] = nextXValue ? "X" : "O";
     onPlay(nextSquares);
   }
-
+  // Monitor who is the winner logic
   function calculateWinner(squares) {
     const lines = [
       [0, 1, 2],
@@ -35,13 +35,17 @@ function Board({ nextXValue, squares, onPlay }) {
     ];
     for (let i = 0; i < lines.length; i++) {
       const [a, b, c] = lines[i];
-      if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
+      if (
+        squares[a] &&
+        squares[a] === squares[b] &&
+        squares[a] === squares[c]
+      ) {
         return squares[a];
       }
     }
     return null;
   }
-
+  //Optimizing the H6 tag for showing the results
   const winner = calculateWinner(squares);
   const status = winner
     ? "Winner: " + winner
@@ -68,25 +72,25 @@ function Board({ nextXValue, squares, onPlay }) {
     </>
   );
 }
-
+// Main Component Game
 function Game() {
-  const [nextXValue, setNextXValue] = useState(true);
-  const [history, setHistory] = useState([Array(9).fill(null)]);
-  const [currentMove, setCurrentMove] = useState(0);
-  const currentSquares = history[currentMove];
-
+  const [nextXValue, setNextXValue] = useState(true); // Manages wheather the next value is 'X' or 'O'
+  const [history, setHistory] = useState([Array(9).fill(null)]); // Manages the Histroy of the Game
+  const [currentMove, setCurrentMove] = useState(0); // Manages the currentMove of the Game
+  const currentSquares = history[currentMove]; // Assigning the currentMove of the Game
+  // Function to handle onClick
   function handlePlay(nextSquares) {
     const nextHistory = [...history.slice(0, currentMove + 1), nextSquares];
     setHistory(nextHistory);
     setCurrentMove(nextHistory.length - 1);
     setNextXValue(!nextXValue);
   }
-
+  // Function to jump to a particular step
   function jumpTo(nextMove) {
     setCurrentMove(nextMove);
     setNextXValue(nextMove % 2 === 0);
   }
-
+  // Function to create buttons for moving to a particular step
   const moves = history.map((squares, move) => {
     const description = move > 0 ? "Move to Step#" + move : "Go to Start";
     return (
